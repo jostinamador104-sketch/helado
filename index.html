@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Helado para Karla</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+  :root {
+    --bg: #e6f2e2;
+    --card: #fbfff8;
+    --ink: #3a1630;
+    --muted: #7a5a6e;
+    --berry: #e8456b;
+    --berry-ink: #ffffff;
+    --cone: #d99a4e;
+    --line: #cfe3c9;
+    --font-display: "Bagel Fat One", "Arial Rounded MT Bold", "Trebuchet MS", sans-serif;
+    --font-body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1c0f19; --card: #2a1626; --ink: #fbe9f1; --muted: #c7a3b6;
+      --berry: #ff6b8d; --berry-ink: #2a0d1a; --cone: #e8ac62; --line: #4a2842;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1c0f19; --card: #2a1626; --ink: #fbe9f1; --muted: #c7a3b6;
+    --berry: #ff6b8d; --berry-ink: #2a0d1a; --cone: #e8ac62; --line: #4a2842;
+    color-scheme: dark;
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    padding-inline: 16px;
+    padding-block: 32px;
+    min-height: 100vh;
+    box-sizing: border-box;
+    display: grid;
+    place-items: center;
+  }
+  .card {
+    width: 100%;
+    max-width: 26rem;
+    background: var(--card);
+    border: 2px solid var(--line);
+    border-radius: 28px;
+    padding: 28px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+  .cone { width: 112px; height: auto; display: block; }
+  .tag {
+    font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); font-weight: 700; margin: 0;
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(2rem, 9vw, 2.6rem);
+    line-height: 1.05;
+    margin: 0;
+    text-wrap: balance;
+  }
+  h1 em { font-style: normal; color: var(--berry); }
+  .lead { margin: 0; color: var(--muted); font-size: 1rem; line-height: 1.5; max-width: 30ch; text-wrap: pretty; }
+  .arena {
+    position: relative;
+    width: 100%;
+    height: 132px;
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  button {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 1.05rem;
+    border-radius: 999px;
+    padding: 14px 26px;
+    cursor: pointer;
+    border: 2px solid var(--berry);
+    transition: transform 0.25s ease, background 0.2s ease;
+  }
+  button:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+  .yes { background: var(--berry); color: var(--berry-ink); }
+  .yes:hover { transform: translateY(-2px); }
+  .maybe { background: transparent; color: var(--berry); }
+  .reply { display: flex; flex-direction: column; gap: 14px; align-items: center; width: 100%; }
+  .reply[hidden] { display: none; }
+  .arena[hidden] { display: none; }
+  .copy[hidden] { display: none; }
+  .reply h2 { font-family: var(--font-display); font-weight: 400; font-size: 1.6rem; margin: 0; }
+  .reply p { margin: 0; color: var(--muted); line-height: 1.5; }
+  .days { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .day {
+    background: transparent; color: var(--ink); border: 2px solid var(--line);
+    padding: 10px 16px; font-size: 0.95rem;
+  }
+  .day[aria-pressed="true"] { background: var(--cone); border-color: var(--cone); color: #2a1626; }
+  .out { font-weight: 700; color: var(--ink); min-height: 1.5em; }
+  .copy {
+    display: inline-block; text-decoration: none; font-weight: 700;
+    background: var(--ink); color: var(--card); border: 2px solid var(--ink);
+    border-radius: 999px; font-size: 0.95rem; padding: 12px 22px;
+  }
+  .copy:focus-visible { outline: 3px solid var(--berry); outline-offset: 3px; }
+  .fine { font-size: 0.8rem; color: var(--muted); margin: 0; }
+  @media (prefers-reduced-motion: reduce) { button { transition: none; } }
+</style>
+</head>
+<body>
+
+<main class="card">
+  <svg class="cone" viewBox="0 0 120 170" role="img" aria-label="Helado de dos bolas en cono">
+    <path d="M30 86 L60 164 L90 86 Z" fill="var(--cone)"/>
+    <path d="M40 98 L80 98 M46 114 L74 114 M52 130 L68 130" stroke="#00000022" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="60" cy="72" r="32" fill="var(--berry)"/>
+    <circle cx="60" cy="40" r="26" fill="#9fd9b8"/>
+    <circle cx="68" cy="16" r="6" fill="#d12f55"/>
+    <path d="M68 10 q4 -8 10 -8" stroke="#3a7a4a" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </svg>
+
+  <p class="tag">Invitación</p>
+  <h1>Karla, te debo un <em>helado</em></h1>
+  <p class="lead">Para compensar la desaparecida. Y no, no es un fresco para el jefe.</p>
+
+  <div class="arena" id="arena">
+    <button class="yes" id="yes" type="button">Sí, dale</button>
+    <button class="maybe" id="maybe" type="button">Tal vez</button>
+  </div>
+
+  <div class="reply" id="reply" hidden>
+    <h2>Trato hecho</h2>
+    <p>Elegí cuándo te queda mejor.</p>
+    <div class="days" id="days">
+      <button class="day" type="button" aria-pressed="false">Sábado</button>
+      <button class="day" type="button" aria-pressed="false">Domingo</button>
+      <button class="day" type="button" aria-pressed="false">Entre semana</button>
+    </div>
+    <p class="out" id="out"></p>
+    <a class="copy" id="wa" href="#" target="_blank" rel="noopener" hidden>Mandarle mi respuesta por WhatsApp</a>
+    <p class="fine">Tranqui, que mi suegro Calín no te detenga a conocer al amor de tu vida jaja</p>
+  </div>
+</main>
+
+<script>
+  var yes = document.getElementById('yes');
+  var maybe = document.getElementById('maybe');
+  var arena = document.getElementById('arena');
+  var reply = document.getElementById('reply');
+  var days = document.getElementById('days');
+  var out = document.getElementById('out');
+  var waLink = document.getElementById('wa');
+  var NUMERO = '50251816228';
+  var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var tries = 0;
+  var chosen = '';
+
+  function openReply() {
+    arena.hidden = true;
+    reply.hidden = false;
+  }
+
+  function dodge() {
+    if (tries >= 4) return;
+    tries += 1;
+    if (tries === 4) {
+      maybe.textContent = 'Bueno, sí';
+      maybe.style.transform = 'none';
+      return;
+    }
+    if (calm) return;
+    var maxX = Math.max(0, arena.clientWidth / 2 - 60);
+    var x = (Math.random() * 2 - 1) * maxX;
+    var y = 20 + Math.random() * 70;
+    maybe.style.transform = 'translate(' + x.toFixed(0) + 'px,' + y.toFixed(0) + 'px)';
+  }
+
+  maybe.addEventListener('pointerenter', function () { if (tries < 4) dodge(); });
+  maybe.addEventListener('click', function () {
+    if (tries >= 4) { openReply(); } else { dodge(); }
+  });
+  yes.addEventListener('click', openReply);
+
+  days.addEventListener('click', function (e) {
+    var b = e.target.closest('.day');
+    if (!b) return;
+    var all = days.querySelectorAll('.day');
+    for (var i = 0; i < all.length; i++) all[i].setAttribute('aria-pressed', 'false');
+    b.setAttribute('aria-pressed', 'true');
+    chosen = b.textContent;
+    var msg = 'Hola, acepto el helado 🍦 Me queda bien: ' + chosen.toLowerCase() + '.';
+    waLink.href = 'https://wa.me/' + NUMERO + '?text=' + encodeURIComponent(msg);
+    out.textContent = 'Anotado: ' + chosen + '. Tocá el botón y enviá el mensaje.';
+    waLink.hidden = false;
+  });
+</script>
+</body>
+</html>
